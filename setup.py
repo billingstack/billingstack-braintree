@@ -28,7 +28,7 @@ dependency_links = common_setup.parse_dependency_links([
 
 setup(
     name='billingstack-braintree',
-    version=common_setup.get_version('billingstack-braintree'),
+    version=common_setup.get_version('billingstack_braintree'),
     description='Braintree PGP for BillingStack',
     author='Endre Karlson',
     author_email='endre.karlson@gmail.com',
