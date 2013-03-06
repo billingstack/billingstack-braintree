@@ -1,9 +1,11 @@
 import os.path
 import unittest2
 
+from braintree.exceptions import NotFoundError
+
 from billingstack.openstack.common import jsonutils
 from billingstack.openstack.common import log
-from billingstack.tests.base import TestCase
+from billingstack.tests.payment_gateway.base import ProviderTestCase
 
 from billingstack_braintree.provider import BraintreeProvider
 
@@ -24,14 +26,19 @@ def credentials():
 
 
 @unittest2.skipUnless(credentials(), "Missing Braintree Credentialsi")
-class BraintreeTestCase(TestCase):
+class BraintreeTestCase(ProviderTestCase):
     __test__ = True
+
     def setUp(self):
         cfg = {'environment': 'sandbox'}
         cfg.update(credentials())
 
-        self.provider = BraintreeProvider(cfg)
-        super(BraintreeTestCase, self).__init__()
+        self.pgp = BraintreeProvider(cfg)
+        super(BraintreeTestCase, self).setUp()
 
-    def test_account_create(self):
-        pass
+    def tearDown(self):
+        super(BraintreeTestCase, self).tearDown()
+        try:
+            self.pgp.account_delete(self.customer['id'])
+        except NotFoundError:
+            return
